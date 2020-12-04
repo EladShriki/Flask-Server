@@ -38,3 +38,23 @@ class UserController:
         user_json[API_KEY] = user.api_key
 
         return user_json
+
+    def login(self):
+        user_json = request.json
+        username = user_json[USERNAME_KEY]
+        password = user_json[HASHED_PASSWORD]
+
+        for user in self._users.values():
+            if username == user.username:
+                if password == user.user_hashed_password:
+                    return str(user)
+
+        abort(404)
+
+    def delete_user(self, user_id):
+        try:
+            self._users.pop(user_id)
+        except KeyError:
+            abort(404)
+
+        return ""
